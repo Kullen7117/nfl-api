@@ -2,9 +2,11 @@
   "name": "nfl-api",
   "version": "1.0.0",
   "description": "## Instructions",
-  "main": "index.js",
+  "main": ".eslintrc.js",
   "scripts": {
-    "dev": "./node_modules/.bin/nodemon index.js",
+    "dev": "npm run migrate:dev && npm run server:dev",
+    "server:dev": "nodemon index.js",
+    "migrate:dev": "./node_modules/.bin/sequelize db:migrate --env development --config ./config/sequelize.js",
     "lint": "./node_modules/.bin/eslint --format codeframe .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -23,7 +25,8 @@
     "dotenv": "^8.1.0",
     "express": "^4.17.1",
     "mysql2": "^1.7.0",
-    "sequelize": "^5.18.1"
+    "sequelize": "^5.18.1",
+    "sequelize-cli": "^5.5.1"
   },
   "devDependencies": {
     "eslint": "^6.3.0",

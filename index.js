@@ -1,55 +1,72 @@
 const express = require('express')
-const bodyParser = require('body-parser')
-const Op = require('sequelize').Op
-const models = require('./models')
-
 const app = express()
+const bodyParser = require('body-parser')
+const teams = require('./teams.json')
 
-// this required to tell express where static content can be delivered from
-// such as css and js for the client
-app.use('/client', express.static('client'))
+function validatePost(body) {
+  if (!body.location || !body.mascot || !body.abbreviation || !body.conference || !body.division) {
+    return false
+  } else {
+    return true
+  }
+}
 
-// used for sendFile
-app.use(express.static('client'))
+app.use(bodyParser.json())
 
-app.get('/', (request, response) => {
-  // this sendFile function works when we have used the static configuration first
-  response.sendFile('./client/index.html')
+app.post('/teams', (request, respond) => {
+  let body = request.body || {}
+  let id = teams.length + 1
+
+  if (!validatePost(body)) {
+    respond.status(400).send('Please enter the following: location, mascot, abbreviation, conference, division')
+  } else {
+    let {
+      location,
+      mascot,
+      abbreviation,
+      conference,
+      division
+    } = request.body
+    let newTeam = {
+      id,
+      location,
+      mascot,
+      abbreviation,
+      conference,
+      division
+    }
+    teams.push(newTeam)
+    respond.status(201).send(newTeam)
+  }
+
 })
 
-app.get('/api/teams', async (request, response) => {
-  const teams = await models.Teams.findAll()
+app.get('/', (request, response) => {
+  response.send('Welcome to my NFL API')
+})
 
+app.get('/teams', (request, response) => {
   response.send(teams)
 })
 
-app.get('/api/teams/:identifier', async (request, response) => {
-  const { identifier } = request.params
-  const match = await models.Teams.findOne({
-    where: { [Op.or]: [{ id: identifier }, { abbreviation: identifier }] }
+app.get('/teams/:filter', (request, response) => {
+
+  var teamRequested = teams.filter((team) => {
+    return parseInt(request.params.filter) === team.id || request.params.filter === team.abbreviation
   })
 
-  if (match) {
-    response.send(match)
+  if (teamRequested.length) {
+    response.send(teamRequested)
   } else {
     response.sendStatus(404)
   }
+
 })
 
-app.post('/api/teams', bodyParser.json(), async (request, response) => {
-  const {
-    location, mascot, abbreviation, conference, division,
-  } = request.body
-
-  if (!location || !mascot || !abbreviation || !conference || !division) {
-    response.status(400).send('The following fields are required: location, mascot, abbreviation, conference, division')
-  }
-
-  const newTeam = await models.Teams.create({ location, mascot, abbreviation, conference, division })
-
-  response.status(201).send(newTeam)
+app.all('*', (request, response) => {
+  response.send('Unclear on your intentions?')
 })
 
-app.listen(1337, () => { console.log('Listening on port 1337') })
-
-module.exports = app
+app.listen(1337, () => {
+  console.log('Server is running!')
+})
