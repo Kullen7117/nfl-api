@@ -3,6 +3,7 @@ const app = express()
 const bodyParser = require('body-parser')
 const teams = require('./teams.json')
 
+
 function validatePost(body) {
   if (!body.location || !body.mascot || !body.abbreviation || !body.conference || !body.division) {
     return false
@@ -67,6 +68,6 @@ app.all('*', (request, response) => {
   response.send('Unclear on your intentions?')
 })
 
-app.listen(1337, () => {
+app.listen(1370, () => {
   console.log('Server is running!')
 })

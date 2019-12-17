@@ -1,12 +1,11 @@
-
 // nothing to see here yet.  Move along
 
 // this won't be running on the server
 // this is a static file that we expect to run on the client
 
 function startup() {
-  // eslint-disable-next-line no-undef
-  document.body.innerHTML = '<p>Taken Over on Startup</p>'
+    // eslint-disable-next-line no-undef
+    document.body.innerHTML = '<p>Taken Over on Startup</p>'
 }
 
 const doMoreStuff = () => {
@@ -14,7 +13,8 @@ const doMoreStuff = () => {
 }
 
 function startTimer(duration, display) {
-    var timer = duration, minutes, seconds;
+    var timer = duration,
+        minutes, seconds;
     setInterval(function () {
         minutes = parseInt(timer / 60, 10);
         seconds = parseInt(timer % 60, 10);
@@ -31,8 +31,7 @@ function startTimer(duration, display) {
 }
 
 window.onload = function () {
-    var fiveMinutes = 60 * 10,
-        display = document.querySelector('#time');
-    startTimer(fiveMinutes, display);
-};
-
+  var fiveMinutes = 60 * 10,
+    display = document.querySelector('#time');
+  startTimer(fiveMinutes, display)
+}
